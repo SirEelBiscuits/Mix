@@ -7,7 +7,7 @@ namespace Mix
 
 void Entity::kill()
 {
-    getEntityManager().killEntity(*this);
+    getEntityManager().destroyEntity(*this);
 }
 
 bool Entity::isAlive() const
@@ -107,7 +107,7 @@ void EntityManager::destroyEntity(Entity e)
 
 void EntityManager::killEntity(Entity e)
 {
-    world.killEntity(e);
+    world.destroyEntity(e);
 }
 
 bool EntityManager::isEntityAlive(Entity e) const
@@ -135,7 +135,7 @@ const ComponentMask& EntityManager::getComponentMask(Entity e) const
 void EntityManager::tagEntity(Entity e, std::string tag)
 {
     taggedEntities.emplace(tag, e);
-    entityTags.emplace(e.id, v);
+    entityTags.emplace(e.id, tag);
 }
 
 bool EntityManager::hasTag(std::string tag) const

@@ -3,6 +3,8 @@
 #include <vector>
 #include <cassert>
 
+#include "Config.h"
+
 namespace Mix
 {
 

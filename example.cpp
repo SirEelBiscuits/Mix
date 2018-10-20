@@ -1,4 +1,4 @@
-#include "Mix/World.hpp"
+#include "Mix/World.h"
 #include <iostream>
 using namespace Mix;
 
@@ -28,8 +28,8 @@ public:
         for (auto e : getEntities()) {
             auto &position = e.getComponent<PositionComponent>();
             const auto velocity = e.getComponent<VelocityComponent>();
-            position.x += velocity.x;
-            position.y += velocity.y;
+            position.x += velocity.dx;
+            position.y += velocity.dy;
         }
     }
 };
