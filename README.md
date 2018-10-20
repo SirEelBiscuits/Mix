@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.org/SirEelBiscuits/Mix.svg?branch=master)](https://travis-ci.org/SirEelBiscuits/Mix)
+
 Mix
 ======
 
