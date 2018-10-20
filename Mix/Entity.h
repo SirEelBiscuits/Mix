@@ -145,7 +145,7 @@ public:
 
 private:
     template <typename T>
-    std::shared_ptr<Pool<T>> accommodateComponent();
+    Pool<T>* accommodateComponent();
 
     // minimum amount of free indices before we reuse one
     const std::uint32_t MinimumFreeIds = MINIMUM_FREE_IDS;
@@ -158,7 +158,7 @@ private:
 
     // vector of component pools, each pool contains all the data for a certain component type
     // vector index = component id, pool index = entity id
-    std::vector<std::shared_ptr<AbstractPool>> componentPools;
+    std::vector<std::unique_ptr<AbstractPool>> componentPools;
 
     // vector of component masks, each mask lets us know which components are turned "on" for a specific entity
     // vector index = entity id, each bit set to 1 means that the entity has that component
@@ -210,7 +210,7 @@ void EntityManager::addComponent(Entity e, T component)
 {
     const auto componentId = Component<T>::getId();
     const auto entityId = e.getIndex();
-    std::shared_ptr<Pool<T>> componentPool = accommodateComponent<T>();
+    auto componentPool = static_cast<Pool<T>*>(accommodateComponent<T>());
 
     if (entityId >= componentPool->getSize()) {
         componentPool->resize(versions.size());
@@ -253,7 +253,7 @@ T& EntityManager::getComponent(Entity e) const
 
     assert(hasComponent<T>(e));
     assert(componentId < componentPools.size());
-    auto componentPool = std::static_pointer_cast<Pool<T>>(componentPools[componentId]);
+    auto componentPool = static_cast<Pool<T>*>(componentPools[componentId].get());
 
     assert(componentPool);
     assert(entityId < componentPool->getSize());
@@ -261,20 +261,15 @@ T& EntityManager::getComponent(Entity e) const
 }
 
 template <typename T>
-std::shared_ptr<Pool<T>> EntityManager::accommodateComponent()
+Pool<T>* EntityManager::accommodateComponent()
 {
     const auto componentId = Component<T>::getId();
 
-    if (componentId >= componentPools.size()) {
-        componentPools.resize(componentId + 1, nullptr);
+    if(componentId >= componentPools.size()) {
+        componentPools.push_back(std::make_unique<Pool<T>>());
     }
 
-    if (!componentPools[componentId]) {
-        std::shared_ptr<Pool<T>> pool(new Pool<T>());
-        componentPools[componentId] = pool;
-    }
-
-    return std::static_pointer_cast<Pool<T>>(componentPools[componentId]);
+    return static_cast<Pool<T>*>(componentPools[componentId].get());
 }
 
 }
