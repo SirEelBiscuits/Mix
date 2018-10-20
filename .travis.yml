@@ -1,5 +1,5 @@
 language: cpp
-script: g++ -std=c++14 example.cpp Mix/*.cpp -o test && ./test
+script: $(CXX) -std=c++14 example.cpp Mix/*.cpp -o test && ./test
 install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
